@@ -19,14 +19,13 @@
 - Deployment: Frontend deployed on AWS S3, Backend deployed on AWS ECS
 - CI/CD: Jenkins for continuous integration and deployment
 
-License
+## License
 This project is licensed under the MIT License.
 
 ## Developers
-Caitlinyy
-[Gary Yao](https://github.com/GaryYa0)
-Sebrina Xian
-Ryan Xu
-Jess Jiang
-Amy Song
-Jodie
+- Caitlinyy
+- [Gary Yao](https://github.com/GaryYa0)
+- Sebrina Xian
+- Ryan Xu
+- Jess Jiang
+- Jodie
