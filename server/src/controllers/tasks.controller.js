@@ -17,7 +17,13 @@ const postTask = async (req, res) => {
   }
 }
 
+const getAllTasks = async(req, res) => {
+  const tasks = await TaskModel.find().exec()
+  res.json(tasks)
+}
+
 
 module.exports = {
-  postTask
+  postTask,
+  getAllTasks
 }
