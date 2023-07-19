@@ -20,8 +20,8 @@ module.exports = async (app) => {
   // swagger api docs
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc))
   // testing only
-  app.get('/', (req, res) => {
-    res.send('Hello, world!')
-  })
+  // app.get('/', (req, res) => {
+  //   res.send('Hello, world!')
+  // })
   return app
 }

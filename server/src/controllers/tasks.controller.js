@@ -62,14 +62,28 @@ const postTask = async (req, res) => {
   }
 }
 
-
-const getAllTasks = async(req, res) => {
-  const tasks = await TaskModel.find().exec()
-  res.json(tasks)
+  const getAllTasks = async (req, res) => {
+  try {
+    const tasks = await TaskModel.find().exec()
+    res.json(tasks)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
+}
+  
+  const getTaskById = async (req, res) => {
+  try {
+    const { id } = req.params
+    const task = await TaskModel.findById(id).exec()
+    res.json(task)
+  } catch (error) {
+    res.status(404).json({ message: error.message })
+  }
 }
 
 
 module.exports = {
-  postTask,
-  getAllTasks
+    postTask,
+    getAllTasks,
+    getTaskById
 }
