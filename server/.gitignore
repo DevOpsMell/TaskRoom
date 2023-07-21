@@ -8,4 +8,3 @@ tmp/
 .vscode/
 *.swp
 .DS_Store
-package-lock.json
