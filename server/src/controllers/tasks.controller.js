@@ -105,18 +105,18 @@ const updateTask = async (req, res) => {
 //delete Task by id 
 const deleteTaskById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const task = await TaskModel.findByIdAndDelete(id).exec();
+    const { id } = req.params
+    const task = await TaskModel.findByIdAndDelete(id).exec()
     if (!task) {
-      res.status(404).json({ message: 'Task not found' });
-      return;
+      res.status(404).json({ message: 'Task not found' })
+      return
     }
-    res.json({ message: 'Task deleted successfully' });
+    res.json({ message: 'Task deleted successfully' })
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Server error' });
+    console.error(error)
+    res.status(500).json({ error: 'Server error' })
   }
-};
+}
 
 module.exports = {
   postTask,
