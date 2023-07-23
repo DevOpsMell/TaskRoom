@@ -29,3 +29,4 @@ This project is licensed under the MIT License.
 - Ryan Xu
 - Jess Jiang
 - Jodie
+- Edward
