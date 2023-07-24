@@ -10,5 +10,5 @@ module.exports = swaggerJsDoc({
       description: 'This is the API documentation',
     },
   },
-  apis: ['src/controllers/*.js', 'src/models/*.js', 'src/routes/*.js'],
+  apis: ['src/utils/swagger.comment/*.js'],
 })
