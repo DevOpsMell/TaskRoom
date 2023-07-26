@@ -36,30 +36,31 @@ const getTaskById = async (req, res) => {
   }
 }
 
-const updateTask = async (req, res) => {
+const updateTask = async (req, res, next) => {
   const { id } = req.params
-  const { title, content, created_by, assigned_to, due_at, comment } = req.body
-  const task = await TaskModel.findByIdAndUpdate(
-    id,
-    {
-      title,
-      content,
-      created_by,
-      assigned_to,
-      last_modified_at: Date.now(),
-      due_at,
-      comment,
-    },
-    { new: true }
-  ).exec()
-  if (!task) {
-    res.status(404).json({ message: 'Task not found' })
-    return
+  const { title, content, created_by, assigned_to, due_at, comment, status } = req.body
+  try {
+    const task = await TaskModel.findByIdAndUpdate(
+      id,
+      {
+        title,
+        content,
+        created_by,
+        assigned_to,
+        last_modified_at: Date.now(),
+        due_at,
+        comment,
+        status
+      },
+      { new: true }
+    ).exec()
+    res.status(204)
+  } catch (error) {
+    next(error)
   }
-  res.json(task)
 }
 
-//delete Task by id 
+//delete Task by id
 const deleteTaskById = async (req, res) => {
   try {
     const { id } = req.params
