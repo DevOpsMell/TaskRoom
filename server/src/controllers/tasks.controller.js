@@ -1,17 +1,19 @@
 const TaskModel = require('../models/task.model')
+const NotFoundError = require('../errors/not.found')
 
 const postTask = async (req, res, next) => {
   // get userId from req.body for testing purpose, should be req.user.id
   const { parent_project, title, created_by } = req.body
   // const created_by = req.user.id
-  const task = new TaskModel({
-    parent_project,
-    title,
-    created_by,
-  })
   try {
+    const task = new TaskModel({
+      parent_project,
+      title,
+      created_by,
+    })
+
     await task.save()
-    res.status(201).json(`${task.id} created successfully`)
+    res.status(201).json({ message: `${task.id} created successfully` })
   } catch (error) {
     next(error)
   }
@@ -31,7 +33,7 @@ const getTaskById = async (req, res, next) => {
     const { id } = req.params
     const task = await TaskModel.findById(id)
     if (!task) {
-      throw new Error(`TaskId ${id} not found`)
+      throw new NotFoundError(`TaskId ${id} not found`)
     }
     res.json(task)
   } catch (error) {
@@ -39,11 +41,12 @@ const getTaskById = async (req, res, next) => {
   }
 }
 
+
 const updateTask = async (req, res, next) => {
   const { id } = req.params
   const { title, content, created_by, assigned_to, due_at, comment, status } = req.body
   try {
-    const task = await TaskModel.findByIdAndUpdate(
+    await TaskModel.findByIdAndUpdate(
       id,
       {
         title,
@@ -70,11 +73,10 @@ const deleteTaskById = async (req, res, next) => {
     const { id } = req.params
     const task = await TaskModel.findByIdAndDelete(id).exec()
     if (!task) {
-      throw new Error(`TaskId ${id} not found`)
+      throw new NotFoundError(`TaskId ${id} not found`)
     }
     res.json({ message: 'Task deleted successfully' })
   } catch (error) {
-    console.error(error)
     next(error)
   }
 }
