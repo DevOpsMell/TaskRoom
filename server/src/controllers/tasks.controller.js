@@ -17,22 +17,25 @@ const postTask = async (req, res, next) => {
   }
 }
 
-const getAllTasks = async (req, res) => {
+const getAllTasks = async (req, res, next) => {
   try {
-    const tasks = await TaskModel.find().exec()
+    const tasks = await TaskModel.find()
     res.json(tasks)
   } catch (error) {
-    res.status(404).json({ message: error.message })
+    next(error)
   }
 }
 
-const getTaskById = async (req, res) => {
+const getTaskById = async (req, res, next) => {
   try {
     const { id } = req.params
-    const task = await TaskModel.findById(id).exec()
+    const task = await TaskModel.findById(id)
+    if (!task) {
+      throw new Error(`TaskId ${id} not found`)
+    }
     res.json(task)
   } catch (error) {
-    res.status(404).json({ message: error.message })
+    next(error)
   }
 }
 
@@ -60,19 +63,19 @@ const updateTask = async (req, res, next) => {
   }
 }
 
-//delete Task by id
-const deleteTaskById = async (req, res) => {
+
+//delete Task by id 
+const deleteTaskById = async (req, res, next) => {
   try {
     const { id } = req.params
     const task = await TaskModel.findByIdAndDelete(id).exec()
     if (!task) {
-      res.status(404).json({ message: 'Task not found' })
-      return
+      throw new Error(`TaskId ${id} not found`)
     }
     res.json({ message: 'Task deleted successfully' })
   } catch (error) {
     console.error(error)
-    res.status(500).json({ error: 'Server error' })
+    next(error)
   }
 }
 
