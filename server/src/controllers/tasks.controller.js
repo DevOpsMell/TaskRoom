@@ -60,7 +60,7 @@ const updateTask = async (req, res, next) => {
       },
       { new: true }
     ).exec()
-    res.status(204)
+    res.status(204).send()
   } catch (error) {
     next(error)
   }
