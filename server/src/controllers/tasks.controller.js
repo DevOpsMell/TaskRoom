@@ -46,7 +46,7 @@ const updateTask = async (req, res, next) => {
   const { id } = req.params
   const { title, content, created_by, assigned_to, due_at, comment, status } = req.body
   try {
-    await TaskModel.findByIdAndUpdate(
+    const task = await TaskModel.findByIdAndUpdate(
       id,
       {
         title,
@@ -60,6 +60,9 @@ const updateTask = async (req, res, next) => {
       },
       { new: true }
     ).exec()
+    if (!task) {
+      throw new NotFoundError(`TaskId ${id} not found`)
+    }
     res.status(204).send()
   } catch (error) {
     next(error)

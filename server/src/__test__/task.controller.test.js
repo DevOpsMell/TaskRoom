@@ -94,6 +94,12 @@ describe('Task API', () => {
 
     const updatedTaskData = {
       title: 'Updated Task Title',
+      content: 'Updated Task Content',
+      created_by: 'user2',
+      assigned_to: '64c26de6d5351a0d05b7c5bb',
+      comment: '64c26de6d5351a0d05b7c5c0',
+      due_at: new Date(),
+      status: 'in_progress',
     };
 
     await request(testApp)
@@ -104,6 +110,17 @@ describe('Task API', () => {
     const updatedTask = await TaskModel.findById(task._id);
 
     expect(updatedTask.title).toEqual(updatedTaskData.title);
+    expect(updatedTask.content).toEqual(updatedTaskData.content);
+    expect(updatedTask.created_by).toEqual(updatedTaskData.created_by);
+    expect(updatedTask.assigned_to.toString()).toEqual(
+      updatedTaskData.assigned_to,
+    );
+    expect(updatedTask.due_at.toISOString()).toEqual(
+      updatedTaskData.due_at.toISOString(),
+    );
+    expect(updatedTask.comment.toString()).toEqual(updatedTaskData.comment);
+
+    expect(updatedTask.status).toEqual(updatedTaskData.status);
   });
 
   test('DELETE /api/v1/tasks/:id should delete a task', async () => {
@@ -123,5 +140,55 @@ describe('Task API', () => {
     const deletedTask = await TaskModel.findById(task._id);
 
     expect(deletedTask).toBeNull();
+  });
+  test('POST /api/v1/tasks should return 400 Bad Request if required fields are missing', async () => {
+    const task = {
+      parent_project: 'project1',
+      // title is missing
+      created_by: 'user1',
+    };
+    const response = await request(testApp)
+      .post('/api/v1/tasks')
+      .send(task);
+    expect(response.status).toEqual(400);
+    expect(response.body.error).toContain('ValidationError');
+  });
+
+  test('GET /api/v1/tasks/:id should return 404 Resource not found if task is not found', async () => {
+    const nonExistingTaskId = '60f5c5e0c0e6a31f6c8a7f00';
+    const response = await request(testApp)
+      .get(`/api/v1/tasks/${nonExistingTaskId}`)
+      .expect(404);
+
+    expect(response.body.error).toContain('Resource not found');
+  });
+
+  test('PATCH /api/v1/tasks/:id should return 404 Resource not found if task is not found', async () => {
+    const nonExistingTaskId = '60f5c5e0c0e6a31f6c8a7f00';
+    const updatedTaskData = {
+      title: 'Updated Task Title',
+      content: 'Updated Task Content',
+      created_by: 'user2',
+      assigned_to: '64c26de6d5351a0d05b7c5bb',
+      comment: '64c26de6d5351a0d05b7c5c0',
+      due_at: new Date(),
+      status: 'in_progress',
+    };
+
+    const response = await request(testApp)
+      .patch(`/api/v1/tasks/${nonExistingTaskId}`)
+      .send(updatedTaskData)
+      .expect(404);
+
+    expect(response.body.error).toContain('Resource not found');
+  });
+
+  test('DELETE /api/v1/tasks/:id should return 404 Resource not found if task is not found', async () => {
+    const nonExistingTaskId = '60f5c5e0c0e6a31f6c8a7f00';
+    const response = await request(testApp)
+      .delete(`/api/v1/tasks/${nonExistingTaskId}`)
+      .expect(404);
+
+    expect(response.body.error).toContain('Resource not found');
   });
 });
