@@ -19,9 +19,6 @@ module.exports = async (app) => {
   app.get('/healthcheck', (request, response) => response.status(200).send({ message: 'healthy' }))
   // swagger api docs
   app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc))
-  // testing only
-  // app.get('/', (req, res) => {
-  //   res.send('Hello, world!')
-  // })
+
   return app
 }
