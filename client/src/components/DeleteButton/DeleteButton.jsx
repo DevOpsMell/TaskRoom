@@ -1,22 +1,25 @@
 import * as React from 'react'
 import Button from '@mui/material/Button'
+import RemoveIcon from '@mui/icons-material/Remove'
 
-const SecondaryButton = ({ children }) => {
+const DeleteButton = ({ children }) => {
   return (
     <>
       <Button
         variant="contained"
+        startIcon={<RemoveIcon />}
         sx={{
-          backgroundColor: '#091e420f',
-          color: '#44546F',
+          width: '100%',
+          backgroundColor: '#ca3521',
           boxShadow: 'none',
           textTransform: 'none',
+          justifyContent: 'flex-start',
           '&:hover': {
-            backgroundColor: '#091E4224',
+            backgroundColor: '#AE2A19',
             boxShadow: 'none',
           },
           '&:press': {
-            backgroundColor: '#091E424F',
+            backgroundColor: '#601E16',
             boxShadow: 'none',
           },
         }}>
@@ -26,4 +29,4 @@ const SecondaryButton = ({ children }) => {
   )
 }
 
-export default SecondaryButton
+export default DeleteButton
