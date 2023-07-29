@@ -33,6 +33,7 @@ module.exports = {
     'quotes': [
       'error',
       'single'
-    ]
+    ],
+    'no-console': 'off',
   }
 }
