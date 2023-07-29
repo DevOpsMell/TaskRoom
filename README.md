@@ -15,14 +15,21 @@
 - Frontend: React
 - Backend: Node.js with Express
 - Database: MongoDB
+- CSS: Material UI
 - Authentication: JWT (JSON Web Tokens)
 - Deployment: Frontend deployed on AWS S3, Backend deployed on AWS ECS
 - CI/CD: Jenkins for continuous integration and deployment
 
+## Theme
+
+- Font: Roboto
+
 ## License
+
 This project is licensed under the MIT License.
 
 ## Developers
+
 - Caitlinyy
 - [Gary Yao](https://github.com/GaryYa0)
 - Sebrina Xian
