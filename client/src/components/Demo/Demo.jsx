@@ -1,10 +1,20 @@
-import * as React from 'react'
-import Button from '@mui/material/Button'
+import React from 'react'
+import SecondaryButton from '../SecondaryButton'
+import PrimaryButton from '../PrimaryButton'
+import DeleteButton from '../DeleteButton'
+import Card from '@mui/material/Card'
 
-export default function Demo() {
-  return (
-    <div>
-      <Button variant="contained">Demo Button</Button>
-    </div>
-  )
-}
+const Demo = () => (
+  <>
+    <PrimaryButton>Save</PrimaryButton>
+    <SecondaryButton>Secondary</SecondaryButton>
+    <Card
+      sx={{
+        maxWidth: 150,
+      }}>
+      <DeleteButton>Delete</DeleteButton>
+    </Card>
+  </>
+)
+
+export default Demo
