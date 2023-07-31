@@ -2,37 +2,29 @@ const mongoose = require('mongoose');
 const request = require('supertest');
 const TaskModel = require('../models/task.model');
 const testApp = require('./test.app');
-const { MongoMemoryServer } = require('mongodb-memory-server');
+const dbLoader = require('../loaders/db');
 const {
   describe,
   test,
   expect,
   beforeAll,
   afterAll,
-  afterEach,
 } = require('@jest/globals');
 
 describe('Task API', () => {
-  let mongoServer;
   beforeAll(async () => {
-    mongoServer = await MongoMemoryServer.create();
-    const mongoUri = mongoServer.getUri();
-    console.log('mongoUri:', mongoUri);
-    await mongoose.connect(mongoUri);
+    dbLoader(process.env.MONGO_TEST_URI);
   });
   afterAll(async () => {
+    // await TaskModel.deleteMany({});
     await mongoose.disconnect();
-    await mongoServer.stop();
-  });
-  afterEach(async () => {
-    await TaskModel.deleteMany({});
   });
 
   test('POST /api/v1/tasks should create a new task', async () => {
     const task = {
-      parent_project: 'project1',
-      title: 'Task 1',
-      created_by: 'user1',
+      parent_project: 'project PostTest',
+      title: 'Task PostTest',
+      created_by: 'user PostTest',
     };
     const response = await request(testApp)
       .post('/api/v1/tasks')
@@ -47,33 +39,40 @@ describe('Task API', () => {
     expect(savedTask.parent_project).toEqual(task.parent_project);
     expect(savedTask.title).toEqual(task.title);
     expect(savedTask.created_by).toEqual(task.created_by);
+    await TaskModel.findByIdAndDelete(savedTask.id);
   });
 
   test('GET /api/v1/tasks should return all tasks', async () => {
-    const tasks = [
-      { parent_project: 'project1', title: 'Task 1', created_by: 'user1' },
-      { parent_project: 'project2', title: 'Task 2', created_by: 'user2' },
-    ];
-    await TaskModel.insertMany(tasks);
+    const currentTasks = await TaskModel.find();
 
+    const tasks = [];
+    for (let i = 1; i < 6; i++) {
+      tasks.push({
+        parent_project: `project GetAllTest${i}`,
+        title: `Task GetAllTest${i}`,
+        created_by: `user GetAllTest${i}`,
+      });
+    }
+    const newTasks = await TaskModel.insertMany(tasks);
     const response = await request(testApp).get('/api/v1/tasks').expect(200);
-
-    expect(response.body.length).toEqual(2);
-    expect(response.body[0].parent_project).toEqual(tasks[0].parent_project);
-    expect(response.body[0].title).toEqual(tasks[0].title);
-    expect(response.body[0].created_by).toEqual(tasks[0].created_by);
-    expect(response.body[1].parent_project).toEqual(tasks[1].parent_project);
-    expect(response.body[1].title).toEqual(tasks[1].title);
-    expect(response.body[1].created_by).toEqual(tasks[1].created_by);
+    expect(response.body.length).toEqual(currentTasks.length + tasks.length);
+    for (let i = 0; i < 5; i++) {
+      expect(response.body[currentTasks.length+i].parent_project).toEqual(
+        newTasks[i].parent_project,
+      );
+      expect(response.body[currentTasks.length+i].title).toEqual(newTasks[i].title);
+      expect(response.body[currentTasks.length+i].created_by).toEqual(newTasks[i].created_by);
+    }
+    await TaskModel.deleteMany({ _id: { $in: newTasks.map((t) => t._id) } });
   });
 
   test('GET /api/v1/tasks/:id should return a single task', async () => {
     const task = new TaskModel({
-      parent_project: 'project1',
-      title: 'Task 1',
-      created_by: 'user1',
+      parent_project: 'project GetByIdTest',
+      title: 'Task GetByIdTest',
+      created_by: 'user GetByIdTest',
     });
-    await task.save();
+    const savedTask = await task.save();
 
     const response = await request(testApp)
       .get(`/api/v1/tasks/${task._id}`)
@@ -82,6 +81,7 @@ describe('Task API', () => {
     expect(response.body.parent_project).toEqual(task.parent_project);
     expect(response.body.title).toEqual(task.title);
     expect(response.body.created_by).toEqual(task.created_by);
+    await TaskModel.findByIdAndDelete(savedTask.id);
   });
 
   test('PATCH /api/v1/tasks/:id should update a task', async () => {
@@ -121,13 +121,14 @@ describe('Task API', () => {
     expect(updatedTask.comment.toString()).toEqual(updatedTaskData.comment);
 
     expect(updatedTask.status).toEqual(updatedTaskData.status);
+    await TaskModel.findByIdAndDelete(updatedTask.id);
   });
 
   test('DELETE /api/v1/tasks/:id should delete a task', async () => {
     const task = new TaskModel({
-      parent_project: 'project1',
-      title: 'Task 1',
-      created_by: 'user1',
+      parent_project: 'project DeleteTest',
+      title: 'Task DeleteTest',
+      created_by: 'user DeleteTest',
     });
     await task.save();
 
@@ -147,9 +148,11 @@ describe('Task API', () => {
       // title is missing
       created_by: 'user1',
     };
+
     const response = await request(testApp)
       .post('/api/v1/tasks')
       .send(task);
+
     expect(response.status).toEqual(400);
     expect(response.body.error).toContain('ValidationError');
   });
