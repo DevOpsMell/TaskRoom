@@ -2,7 +2,7 @@ import * as React from 'react'
 import Container from '@mui/material/Container'
 import ModalHeader from './components/ModalHeader'
 
-const TaskCardModal = () => {
+const TaskCardModal = ({ onClose }) => {
   return (
     <Container
       style={{
@@ -15,7 +15,7 @@ const TaskCardModal = () => {
         backgroundColor: '#091E420F',
         overflow: 'hidden',
       }}>
-      <ModalHeader />
+      <ModalHeader onClose={onClose} />
     </Container>
   )
 }

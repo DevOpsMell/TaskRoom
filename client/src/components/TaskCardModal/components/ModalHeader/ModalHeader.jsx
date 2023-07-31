@@ -8,7 +8,7 @@ import ClearIcon from '@mui/icons-material/Clear'
 import Button from '@mui/material/Button'
 // import Paper from '@mui/material/Paper'
 
-const ModalHeader = () => {
+const ModalHeader = ({ onClose }) => {
   return (
     <Container
       style={{ padding: '20px 0px 0px 30px' }}
@@ -33,7 +33,10 @@ const ModalHeader = () => {
                 </Box>
               </Grid>
               <Grid item>
-                <Button variant="text" sx={{ color: 'black' }}>
+                <Button
+                  onClick={onClose}
+                  variant="text"
+                  sx={{ color: 'black' }}>
                   <ClearIcon sx={{ fontSize: '20px' }} />
                 </Button>
               </Grid>
