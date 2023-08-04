@@ -1,18 +1,24 @@
 const pino = require('pino');
 const TaskModel = require('../models/task.model')
 const NotFoundError = require('../errors/not.found')
+const columnModel = require('../models/column.model')
 
 const logger = pino(); // Create the logger instance
 
 const postTask = async (req, res, next) => {
   // get userId from req.body for testing purpose, should be req.user.id
-  const { parent_project, title, created_by } = req.body
+  const { parent_column, title, created_by } = req.body
   // const created_by = req.user.id
   try {
+
     const task = new TaskModel({
-      parent_project,
+      parent_column,
       title,
       created_by,
+    })
+
+    await columnModel.findByIdAndUpdate(parent_column, {
+      $push: { tasks: task.id }
     })
 
     await task.save()
@@ -59,11 +65,12 @@ const getTaskById = async (req, res, next) => {
 
 const updateTask = async (req, res, next) => {
   const { id } = req.params
-  const { title, content, created_by, assigned_to, due_at, comment, status } = req.body
+  const { parent_column, title, content, created_by, assigned_to, due_at, comment } = req.body
   try {
     const task = await TaskModel.findByIdAndUpdate(
       id,
       {
+        parent_column,
         title,
         content,
         created_by,
@@ -71,13 +78,18 @@ const updateTask = async (req, res, next) => {
         last_modified_at: Date.now(),
         due_at,
         comment,
-        status
       },
-      { new: true }
     ).exec()
     if (!task) {
       throw new NotFoundError(`TaskId ${id} not found`)
     }
+    await columnModel.findByIdAndUpdate(task.parent_column, {
+      $pull: { tasks: task.id }
+    })
+    await columnModel.findByIdAndUpdate(parent_column, {
+      $push: { tasks: task.id }
+    })
+
     res.status(204).send()
 
     // Log successful update
@@ -98,6 +110,9 @@ const deleteTaskById = async (req, res, next) => {
     if (!task) {
       throw new NotFoundError(`TaskId ${id} not found`)
     }
+    await columnModel.findByIdAndUpdate(task.parent_column, {
+      $pull: { tasks: task.id }
+    })
     res.json({ message: 'Task deleted successfully' })
     // Log successful deletion
     logger.info(`Task ${id} deleted successfully`);

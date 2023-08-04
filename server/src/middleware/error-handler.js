@@ -1,6 +1,8 @@
-// const errorHandler = (err, req, res) => {
+const pino = require('pino');
+const logger = pino(); // Create the logger instance
 const errorHandler = (err, req, res, next) => {
-  // console.error(err);
+
+  logger.error(err.message);
 
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({ error: 'Bad Request', message: err.message });
