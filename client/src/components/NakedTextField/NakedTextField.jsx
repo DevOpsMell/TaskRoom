@@ -1,12 +1,15 @@
 import * as React from 'react'
 import TextField from '@mui/material/TextField'
 
-const NakedTextField = ({ fontSize }) => {
+const NakedTextField = ({ fontSize, sx, style }) => {
   return (
     <div>
       <TextField
+        sx={sx}
         variant="standard"
-        style={{ width: '100%' }}
+        style={style}
+        multiline
+        maxRows={2}
         InputProps={{ disableUnderline: true, style: { fontSize } }}
       />
     </div>
