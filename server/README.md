@@ -22,7 +22,7 @@ MongoDB is installed and running
 3. Configure the application
 
    ```sh
-   MONGODB_URI=mongodb://localhost:***/my-database
+   MONGO_URI=mongodb+srv://taskRoom:*****@taskroom.*****.mongodb.net/taskRoomDB
    ```
 4. Run the application
 
@@ -31,10 +31,14 @@ MongoDB is installed and running
    ```
 5. The server should start running on `http://localhost:8000`
 6. Run the test
+   
+   add the following line into `.env` file
 
    ```bash
-   npm test
+   MONGO_TEST_URI=mongodb+srv://taskRoom:*****@taskroom.*****.mongodb.net/test
    ```
+
+   run `npm test` in terminal
 
 ## Project Structure
 

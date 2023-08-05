@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 
 // connection string
-const connectDB = () => {
-  const connectionString = process.env.MONGO_URI
+const connectDB = (URI=process.env.MONGO_URI) => {
+  const connectionString = URI
   if (!connectionString) {
     console.error('connection string is undefined')
     process.exit(1)
@@ -22,9 +22,9 @@ const connectDB = () => {
   return mongoose.connect(connectionString)
 }
 
-const dbLoader = async () => {
+const dbLoader = async (URI) => {
   try {
-    await connectDB()
+    await connectDB(URI)
   } catch (error) {
     console.error(error)
     process.exit(1)

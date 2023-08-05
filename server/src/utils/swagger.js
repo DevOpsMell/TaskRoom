@@ -1,5 +1,4 @@
-const swaggerJsDoc = require('swagger-jsdoc')
-
+const swaggerJsDoc = require('swagger-jsdoc');
 
 module.exports = swaggerJsDoc({
   definition: {
@@ -10,5 +9,5 @@ module.exports = swaggerJsDoc({
       description: 'This is the API documentation',
     },
   },
-  apis: ['src/utils/swagger.comment/*.js'],
-})
+  apis: ['src/utils/swagger.comment/*.yaml'],
+});

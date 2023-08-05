@@ -48,4 +48,47 @@
  *         comment:
  *           type: string
  *           description: The ID of the comment related to the task. It should be of ObjectID type.
+ *     UpdateTask:
+ *       type: object
+ *       properties:
+ *         parent_project:
+ *           type: string
+ *           description: The ID of the project to which the task belongs.
+ *         title:
+ *           type: string
+ *           description: The title of the task.
+ *         created_by:
+ *           type: string
+ *           description: The ID of the user who created the task. Should be obtained from req.user.id
+ *     TaskResponse:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: Unique identifier of the task.
+ *         parent_project:
+ *           type: string
+ *           description: The ID of the parent project to which the task belongs.
+ *         title:
+ *           type: string
+ *           description: The title of the task.
+ *         created_by:
+ *           type: string
+ *           description: The ID of the user who created the task. Should be obtained from req.user.id
+ *     TasksResponse:
+ *       type: array
+ *       items:
+ *         $ref: '#/components/schemas/TaskResponse'
+ *     NoContentResponse:
+ *       type: object
+ *       properties:
+ *         massage:
+ *           type: string
+ *           description: No content has been found or added into the database.
+ *     ErrorResponse:
+ *       type: object
+ *       properties:
+ *         message:
+ *           type: string
+ *           description: Error message.
  */
