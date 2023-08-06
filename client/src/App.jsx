@@ -1,12 +1,16 @@
 import React from 'react'
-import Demo from './components/Demo'
+import { BrowserRouter } from 'react-router-dom';
+// import Demo from './components/Demo'
+import Router from './routes'
 
-const App = () => {
+
+function App() {
   return (
-    <>
-      <h1>Task Room</h1>
-      <Demo />
-    </>
+    <BrowserRouter>
+      {/* <h1>Task Room</h1>
+      <Demo /> */}
+      <Router />
+    </BrowserRouter>
   )
 }
 
