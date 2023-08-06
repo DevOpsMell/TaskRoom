@@ -2,17 +2,11 @@ const mongoose = require('mongoose')
 
 
 const taskSchema = new mongoose.Schema({
-  parent_project: {
+  parent_column: {
     // should be ObjectID, but for testing purpose, we use String
-    type: String,
-    // type: mongoose.Schema.Types.ObjectId,
-    // ref: 'Project',
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Column',
     required: true
-  },
-  status: {
-    type: String,
-    enum: ['todo', 'in_progress', 'done'],
-    default: 'todo'
   },
   title: {
     type: String,

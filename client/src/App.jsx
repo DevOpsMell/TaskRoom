@@ -1,15 +1,19 @@
 import React from 'react'
-import Demo from './components/Demo'
+import { BrowserRouter } from 'react-router-dom';
+// import Demo from './components/Demo'
+import Router from './routes'
 import TaskBoardHeader from './components/TaskBoardHeader'
 
-const App = () => {
-	return (
-		<>
-			<TaskBoardHeader />
-			<h1>Task Room</h1>
-			<Demo />
-		</>
-	)
+
+function App() {
+  return (
+    <BrowserRouter>
+		<TaskBoardHeader />
+      {/* <h1>Task Room</h1>
+      <Demo /> */}
+      <Router />
+    </BrowserRouter>
+  )
 }
 
 export default App
