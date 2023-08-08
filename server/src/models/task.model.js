@@ -3,7 +3,6 @@ const mongoose = require('mongoose')
 
 const taskSchema = new mongoose.Schema({
   parent_column: {
-    // should be ObjectID, but for testing purpose, we use String
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Column',
     required: true
