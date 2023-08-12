@@ -6,12 +6,12 @@ import LoginPage from './pages/LoginPage'
 
 function Router() {
 	return (
-		<Routes>
-			<Route path='/project' element={<Project />} />
-			<Route path='/register' element={<RegisterPage />} />
-			<Route path='/login' element={<LoginPage />} />
-		</Routes>
-	)
+    <Routes>
+      <Route path="/project" element={<Project />} />
+      <Route path="/register" element={<RegisterPage />} />
+      <Route path="/login" element={<LoginPage />} />
+    </Routes>
+  );
 }
 
 export default Router
