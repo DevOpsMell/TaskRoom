@@ -1,10 +1,10 @@
 const express = require('express')
 const {
-    postProject,
-    getAllProjects,
-    getProjectById,
-    updateProject,
-    deleteProjectById
+  postProject,
+  getAllProjects,
+  getProjectById,
+  updateProject,
+  deleteProjectById
 } = require('../controllers/project.controller')
 
 const projectRouter = express.Router()

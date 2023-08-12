@@ -45,9 +45,8 @@ const getAllTasks = async (req, res, next) => {
 }
 
 const getTaskById = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    /* eslint-disable no-undef */
-    const { id } = req.params;
     const task = await TaskModel.findById(id)
     if (!task) {
       throw new NotFoundError(`TaskId ${id} not found`)
@@ -103,9 +102,8 @@ const updateTask = async (req, res, next) => {
 
 //delete Task by id 
 const deleteTaskById = async (req, res, next) => {
+  const { id } = req.params;
   try {
-    /* eslint-disable no-undef */
-    const { id } = req.params;
     const task = await TaskModel.findByIdAndDelete(id).exec()
     if (!task) {
       throw new NotFoundError(`TaskId ${id} not found`)
