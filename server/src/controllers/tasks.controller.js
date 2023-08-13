@@ -28,7 +28,6 @@ const postTask = async (req, res, next) => {
     logger.info(`Task ${task.id} created successfully`);
   } catch (error) {
     next(error)
-    logger.error(`Error while creating task: ${error.message}`);
   }
 }
 
@@ -40,7 +39,6 @@ const getAllTasks = async (req, res, next) => {
     logger.info(`Retrieved ${tasks.length} tasks`);
   } catch (error) {
     next(error)
-    logger.error(`Error while fetching tasks: ${error.message}`);
   }
 }
 
@@ -57,7 +55,6 @@ const getTaskById = async (req, res, next) => {
     logger.info(`Task ${id} retrieved successfully`);
   } catch (error) {
     next(error)
-    logger.error(`Error while fetching task ${id}: ${error.message}`);
   }
 }
 
@@ -77,7 +74,7 @@ const updateTask = async (req, res, next) => {
         last_modified_at: Date.now(),
         due_at,
         comment,
-      },
+      }, { runValidators: true}
     ).exec()
     if (!task) {
       throw new NotFoundError(`TaskId ${id} not found`)
@@ -95,7 +92,6 @@ const updateTask = async (req, res, next) => {
     logger.info(`Task ${id} updated successfully`);
   } catch (error) {
     next(error)
-    logger.error(`Error while updating task ${id}: ${error.message}`);
   }
 }
 
@@ -116,7 +112,6 @@ const deleteTaskById = async (req, res, next) => {
     logger.info(`Task ${id} deleted successfully`);
   } catch (error) {
     next(error)
-    logger.error(`Error while deleting task ${id}: ${error.message}`);
   }
 }
 

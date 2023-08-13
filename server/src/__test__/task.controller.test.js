@@ -16,7 +16,7 @@ describe('Task API', () => {
     dbLoader(process.env.MONGO_TEST_URI);
   });
   afterAll(async () => {
-    // await TaskModel.deleteMany({});
+    await TaskModel.deleteMany({});
     await mongoose.disconnect();
   });
 
@@ -32,39 +32,37 @@ describe('Task API', () => {
       .expect(201);
 
     expect(response.body.message).toContain('created successfully');
-
     const savedTask = await TaskModel.findById(
       response.body.message.split(' ')[0],
     );
-    // expect(savedTask.parent_column).toEqual(task.parent_column);
+    expect(savedTask.parent_column.toString()).toEqual(task.parent_column);
     expect(savedTask.title).toEqual(task.title);
     expect(savedTask.created_by).toEqual(task.created_by);
     await TaskModel.findByIdAndDelete(savedTask.id);
   });
 
-  // test('GET /api/v1/tasks should return all tasks', async () => {
-  //   const currentTasks = await TaskModel.find();
+  test('GET /api/v1/tasks should return all tasks', async () => {
 
-  //   const tasks = [];
-  //   for (let i = 1; i < 6; i++) {
-  //     tasks.push({
-  //       parent_column: `column GetAllTest${i}`,
-  //       title: `Task GetAllTest${i}`,
-  //       created_by: `user GetAllTest${i}`,
-  //     });
-  //   }
-  //   const newTasks = await TaskModel.insertMany(tasks);
-  //   const response = await request(testApp).get('/api/v1/tasks').expect(200);
-  //   expect(response.body.length).toEqual(currentTasks.length + tasks.length);
-  //   for (let i = 0; i < 5; i++) {
-  //     expect(response.body[currentTasks.length+i].parent_column).toEqual(
-  //       newTasks[i].parent_column,
-  //     );
-  //     expect(response.body[currentTasks.length+i].title).toEqual(newTasks[i].title);
-  //     expect(response.body[currentTasks.length+i].created_by).toEqual(newTasks[i].created_by);
-  //   }
-  //   await TaskModel.deleteMany({ _id: { $in: newTasks.map((t) => t._id) } });
-  // });
+    const tasks = [];
+    for (let i = 1; i < 6; i++) {
+      tasks.push({
+        parent_column: '64d72935d15ea60ee7c7e30f',
+        title: `Task GetAllTest${i}`,
+        created_by: `user GetAllTest${i}`,
+      });
+    }
+    const newTasks = await TaskModel.insertMany(tasks);
+    const response = await request(testApp).get('/api/v1/tasks').expect(200);
+    expect(response.body.length).toEqual(tasks.length);
+    for (let i = 0; i < 5; i++) {
+      expect(response.body[i].parent_column).toEqual(
+        newTasks[i].parent_column.toString(),
+      );
+      expect(response.body[i].title).toEqual(newTasks[i].title);
+      expect(response.body[i].created_by).toEqual(newTasks[i].created_by);
+    }
+    await TaskModel.deleteMany({ _id: { $in: newTasks.map((t) => t._id) } });
+  });
 
   test('GET /api/v1/tasks/:id should return a single task', async () => {
     const task = new TaskModel({
@@ -185,6 +183,50 @@ describe('Task API', () => {
 
     expect(response.body.error).toContain('Resource not found');
   });
+
+  test('PATCH /api/v1/tasks/:id should return 400 Bad Request if format of required fields are wrong', async () => {
+    const task = new TaskModel({
+      parent_column: '64d72935d15ea60ee7c7e30f',
+      title: 'Updated Task Title',
+      created_by: 'user2',
+    });
+    await task.save();
+
+    const updatedTaskData = {
+      assigned_to: '64c26de6d5351a', //CastError with wrong id
+    }
+
+    const response = await request(testApp)
+      .patch(`/api/v1/tasks/${task._id}`)
+      .send(updatedTaskData)
+      .expect(400);
+
+    expect(response.body.error).toContain('CastError');
+    await TaskModel.findByIdAndDelete(task.id);
+  });
+
+  test('PATCH /api/v1/tasks/:id should return 400 Bad Request for ValidationError', async () => {
+    const task = new TaskModel({
+      parent_column: '64d72935d15ea60ee7c7e30f',
+      title: 'Updated Task Title',
+      created_by: 'user2',
+    });
+    await task.save();
+
+    const updatedTaskData = {
+      title: 'Ti', //ValidationError with string shorter than 3
+    }
+
+    const response = await request(testApp)
+      .patch(`/api/v1/tasks/${task._id}`)
+      .send(updatedTaskData)
+      .expect(400);
+
+    expect(response.body.error).toContain('ValidationError');
+    // await TaskModel.findByIdAndDelete(task.id);
+  });
+
+
 
   test('DELETE /api/v1/tasks/:id should return 404 Resource not found if task is not found', async () => {
     const nonExistingTaskId = '60f5c5e0c0e6a31f6c8a7f00';

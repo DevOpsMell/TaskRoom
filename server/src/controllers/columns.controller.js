@@ -20,7 +20,6 @@ const createColumn = async (req, res, next) => {
     // Log successful creation
     logger.info(`Column ${column.id} created successfully`);
   } catch (error) {
-    console.log(error);
     next(error);
   }
 };
@@ -40,9 +39,8 @@ const getColumnById = async (req, res, next) => {
 };
 
 const getAllColumns = async (req, res, next) => {
-  const { parent_project } = req.body;
   try {
-    const columns = await ColumnModel.find({ parent_project });
+    const columns = await ColumnModel.find();
     res.json(columns);
     logger.info(`Retrieved ${columns.length} columns`);
   } catch (error) {
@@ -56,7 +54,7 @@ const updateColumnById = async (req, res, next) => {
   try {
     const column = await ColumnModel.findByIdAndUpdate(id, {
       name,
-    });
+    }, {runValidators: true});
     if (!column) {
       throw new NotFoundError(`ColumnId ${id} not found`);
     }

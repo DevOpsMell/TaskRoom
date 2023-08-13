@@ -8,10 +8,16 @@ const errorHandler = (err, req, res, next) => {
     return res.status(400).json({ error: 'Bad Request', message: err.message });
   }
 
-  if (err.name === 'CastError' || err.name === 'NotFoundError') {
+  if (err.name === 'NotFoundError') {
     return res
       .status(404)
       .json({ error: 'Resource not found', message: err.message });
+  }
+
+  if (err.name === 'CastError') {
+    return res
+      .status(400)
+      .json({ error: 'CastError', message: err.message });
   }
 
   if (err.name === 'ValidationError') {
