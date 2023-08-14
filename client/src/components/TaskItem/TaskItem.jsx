@@ -1,28 +1,42 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Card, CardContent, Typography } from '@mui/material'
-import http from '../../utils/axios'
+import { Draggable } from 'react-beautiful-dnd'
+import { styled } from '@mui/material/styles'
 
-function TaskItem({ taskId }) {
-  const [task, setTask] = React.useState({})
-  const fetchTaskData = async () => {
-    try {
-      const response = await http('/tasks/' + taskId, {
-        method: 'GET',
-      })
-      setTask(response.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-  useEffect(() => {
-    fetchTaskData()
-  }, [])
+const StyledCard = styled(Card)(({ snapshot, provided }) => ({
+  borderRadius: '8px',
+  margin: '8px',
+  transform: snapshot.isDragging
+    ? `${provided.draggableProps.style.transform} rotate(2deg) !important`
+    : 'none',
+}))
+
+function TaskItem({ task, index }) {
   return (
-    <Card sx={{ borderRadius: 2 }} key={task.id}>
-      <CardContent>
-        <Typography sx={{ fontSize: '14px', fontWeight: '400'}}>{task.title}</Typography>
-      </CardContent>
-    </Card>
+    <Draggable draggableId={task.id} index={index} type="task">
+      {(provided, snapshot) => (
+        <StyledCard
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          key={task.id}
+          snapshot={snapshot}
+          provided={provided}
+        >
+          <CardContent
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              paddingBottom: '16px !important',
+            }}
+          >
+            <Typography sx={{ fontSize: '14px', fontWeight: '400' }}>
+              {task.title}
+            </Typography>
+          </CardContent>
+        </StyledCard>
+      )}
+    </Draggable>
   )
 }
 

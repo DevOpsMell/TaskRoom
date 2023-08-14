@@ -1,49 +1,41 @@
 import React from 'react'
 import { Card, CardHeader, Typography } from '@mui/material'
 import TaskItem from '../TaskItem'
-import http from '../../utils/axios'
+import { Droppable } from 'react-beautiful-dnd'
+import { styled } from '@mui/material/styles'
 
-function Column({ columnId }) {
+const StyledCard = styled(Card)(() => ({
+  width: 256,
+  borderRadius: '12px',
+  display: 'flex',
+  flexDirection: 'column',
+  padding: 1,
+  backgroundColor: '#F1F2F4',
+}))
 
-  const [columnData, setColumnData] = React.useState({})
-  const fetchColumnData = async () => {
-    try {
-      const response = await http('/columns/' + columnId, {
-        method: 'GET',
-      })
-      setColumnData(response.data)
-    } catch (err) {
-      console.log(err)
-    }
-  }
-
-  React.useEffect(() => {
-    fetchColumnData()
-  }, [])
-
+function Column({ column }) {
   return (
-    <Card
-      sx={{
-        width: 256,
-        borderRadius: 3,
-        display: 'flex',
-        flexDirection: 'column',
-        gap: 1.5,
-        padding: 1,
-        backgroundColor: '#F1F2F4',
-      }}
-    >
+    <StyledCard>
       <CardHeader
-        key={columnData.id}
+        key={column.id}
         title={
           <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-            {columnData.name}
+            {column.name}
           </Typography>
         }
       />
-      {columnData.tasks &&
-        columnData.tasks.map((task) => <TaskItem taskId={task} key={task} />)}
-    </Card>
+      <Droppable droppableId={column.id} type="task">
+        {(provided) => (
+          <div {...provided.droppableProps} ref={provided.innerRef}>
+            {column.tasks &&
+              column.tasks.map((task, index) => (
+                <TaskItem task={task} key={task.id} index={index} />
+              ))}
+            {provided.placeholder}
+          </div>
+        )}
+      </Droppable>
+    </StyledCard>
   )
 }
 

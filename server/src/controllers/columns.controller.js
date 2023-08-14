@@ -1,6 +1,7 @@
 const pino = require('pino');
 const ColumnModel = require('../models/column.model');
 const NotFoundError = require('../errors/not.found');
+const TaskModel = require('../models/task.model');
 
 const logger = pino(); // Create the logger instance
 
@@ -50,13 +51,21 @@ const getAllColumns = async (req, res, next) => {
 
 const updateColumnById = async (req, res, next) => {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, tasks } = req.body;
   try {
     const column = await ColumnModel.findByIdAndUpdate(id, {
       name,
+      tasks,
     }, {runValidators: true});
     if (!column) {
       throw new NotFoundError(`ColumnId ${id} not found`);
+    }
+    if (tasks && column.tasks.length < tasks.length) {
+      const newTasks = tasks.filter((task) => !column.tasks.includes(task));
+      await TaskModel.updateMany(
+        { _id: { $in: newTasks } },
+        { parent_column: id },
+      );
     }
     res.status(204).send();
     logger.info(`Column ${id} updated successfully`);

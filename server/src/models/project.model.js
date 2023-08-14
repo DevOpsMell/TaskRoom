@@ -13,7 +13,7 @@ const projectSchema = new mongoose.Schema({
     required: true,
     trim: true,
     minlength: 3,
-    maxlength: 30,
+    maxlength: 200,
   },
   created_by: {
     type: mongoose.Schema.Types.ObjectId,

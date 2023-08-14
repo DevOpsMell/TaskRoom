@@ -87,10 +87,34 @@ const deleteProjectById = async (req, res, next) => {
     logger.info(`Error while deleting project ${id}: ${error.message}`)
   }
 }
+
+const getProjectDataById = async (req, res, next) => {
+  const { id } = req.params;
+  try {
+    const project = await ProjectModel.findById(id).populate({
+      path: 'columns',
+      select: 'name tasks',
+      populate: {
+        path: 'tasks',
+        select: 'title',
+      },
+    });
+    if (!project) {
+      throw new NotFoundError(`Project ${id} not found`);
+    }
+    res.json(project);
+    logger.info(`Project ${id} retrieved successfully`);
+  } catch (error) {
+    next(error);
+    logger.error(`Error while fetching project ${id}: ${error.message}`);
+  }
+};
+
 module.exports = {
   postProject,
   getAllProjects,
   getProjectById,
   updateProject,
-  deleteProjectById
+  deleteProjectById,
+  getProjectDataById
 }

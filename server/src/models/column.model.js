@@ -19,15 +19,11 @@ const columnSchema = new mongoose.Schema({
   },
 })
 
-columnSchema.virtual('id').get(function () {
-  if (this._id) {
-    return this._id.toHexString()
-  }
-})
 
 columnSchema.set('toJSON', {
   virtuals: true,
   transform: (doc, ret) => {
+    ret.id = ret._id
     delete ret._id
     delete ret.__v
   }

@@ -46,13 +46,13 @@ const taskSchema = new mongoose.Schema({
 })
 
 
-taskSchema.virtual('id').get(function () {
-  if (this._id) {
-    return this._id.toHexString()
-  }
-})
 taskSchema.set('toJSON', {
   virtuals: true,
+  transform: (doc, ret) => {
+    ret.id = ret._id
+    delete ret._id
+    delete ret.__v
+  }
 })
 
 const TaskModel = mongoose.model('Task', taskSchema)

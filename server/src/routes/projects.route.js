@@ -4,7 +4,8 @@ const {
   getAllProjects,
   getProjectById,
   updateProject,
-  deleteProjectById
+  deleteProjectById,
+  getProjectDataById
 } = require('../controllers/project.controller')
 
 const projectRouter = express.Router()
@@ -14,5 +15,6 @@ projectRouter.get('/',getAllProjects)
 projectRouter.get('/:id',getProjectById)
 projectRouter.patch('/:id',updateProject)
 projectRouter.delete('/:id',deleteProjectById)
+projectRouter.get('/data/:id',getProjectDataById)
 
 module.exports = projectRouter
