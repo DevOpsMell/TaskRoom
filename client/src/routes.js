@@ -3,7 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import RegisterPage from './pages/RegisterPage'
 import LoginPage from './pages/LoginPage'
-import Project from './pages/project'
+import Project from './pages/Project'
 import TaskBoardHeader from './pages/TaskBoardHeader'
 
 const Router = [
