@@ -6,6 +6,7 @@ const config = require('../config')
 const bodyParser = require('body-parser')
 const swaggerUi = require('swagger-ui-express')
 const swaggerJsDoc = require('../utils/swagger')
+const passport = require('passport')
 
 
 module.exports = async (app) => {
@@ -13,6 +14,10 @@ module.exports = async (app) => {
   app.use(express.json())
   app.use(morgan('dev'))
   app.use(bodyParser.json())
+
+  // passport middleware
+  app.use(passport.initialize())
+  // api routes
   app.use(config.api.prefix, v1Router)
 
   // health check api

@@ -8,11 +8,13 @@ const {
 } = require('../controllers/users.controller');
 // const { validateUser } = require('../middleware/userValidation');
 
+const { authenticateJWT } = require('../middleware/auth.middleware');
+
 const userRouter = express.Router();
 
 userRouter.post('/', postUser);
 userRouter.get('/', getAllUsers);
-userRouter.get('/:id', getUserById);
+userRouter.get('/:id', authenticateJWT, getUserById);
 userRouter.patch('/:id', updateUser);
 userRouter.delete('/:id', deleteUserById);
 

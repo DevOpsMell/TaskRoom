@@ -1,40 +1,39 @@
 import React from 'react'
-import { Card, CardContent, Typography } from '@mui/material'
+import { Card, CardContent, Typography, Box } from '@mui/material'
 import { Draggable } from 'react-beautiful-dnd'
 import { styled } from '@mui/material/styles'
 
-const StyledCard = styled(Card)(({ snapshot, provided }) => ({
+const StyledCard = styled(Card)(({ snapshot }) => ({
   borderRadius: '8px',
   margin: '8px',
-  transform: snapshot.isDragging
-    ? `${provided.draggableProps.style.transform} rotate(2deg) !important`
-    : 'none',
+  transform: snapshot.isDragging ? 'rotate(2.5deg)' : 'none',
+  '& .MuiCardContent-root': {
+    paddingBottom: '16px !important',
+    display: 'flex',
+    alignItems: 'center',
+    '& .MuiTypography-root': {
+      fontSize: '14px',
+      fontWeight: '400',
+    },
+  },
 }))
 
 function TaskItem({ task, index }) {
   return (
     <Draggable draggableId={task.id} index={index} type="task">
       {(provided, snapshot) => (
-        <StyledCard
+        <Box
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           key={task.id}
-          snapshot={snapshot}
-          provided={provided}
         >
-          <CardContent
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              paddingBottom: '16px !important',
-            }}
-          >
-            <Typography sx={{ fontSize: '14px', fontWeight: '400' }}>
-              {task.title}
-            </Typography>
-          </CardContent>
-        </StyledCard>
+          <StyledCard snapshot={snapshot}>
+            <CardContent>
+              <Typography>{task.title}</Typography>
+            </CardContent>
+          </StyledCard>
+        </Box>
       )}
     </Draggable>
   )

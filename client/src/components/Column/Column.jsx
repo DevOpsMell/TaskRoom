@@ -4,13 +4,17 @@ import TaskItem from '../TaskItem'
 import { Droppable } from 'react-beautiful-dnd'
 import { styled } from '@mui/material/styles'
 
-const StyledCard = styled(Card)(() => ({
+const StyledCard = styled(Card)(( ) => ({
   width: 256,
   borderRadius: '12px',
   display: 'flex',
   flexDirection: 'column',
   padding: 1,
   backgroundColor: '#F1F2F4',
+  '& .columnTitle': {
+    fontSize: '14px',
+    fontWeight: '500',
+  },
 }))
 
 function Column({ column }) {
@@ -18,11 +22,7 @@ function Column({ column }) {
     <StyledCard>
       <CardHeader
         key={column.id}
-        title={
-          <Typography sx={{ fontSize: '14px', fontWeight: '500' }}>
-            {column.name}
-          </Typography>
-        }
+        title={<Typography className="columnTitle">{column.name}</Typography>}
       />
       <Droppable droppableId={column.id} type="task">
         {(provided) => (
