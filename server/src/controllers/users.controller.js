@@ -34,6 +34,7 @@ const getAllUsers = async (req, res, next) => {
 };
 
 const getUserById = async (req, res, next) => {
+  console.log('Here')
   const { id } = req.params;
   try {
     const user = await UserModel.findById(id);
@@ -45,8 +46,8 @@ const getUserById = async (req, res, next) => {
     // Log the user retrieval
     logger.info(`User ${id} retrieved successfully`);
   } catch (error) {
-    next(error);
-    logger.error(`Error while fetching user ${id}: ${error.message}`);
+    next();
+    // logger.error(`Error while fetching user ${id}: ${error.message}`);
   }
 };
 
@@ -89,10 +90,23 @@ const deleteUserById = async (req, res, next) => {
     logger.error(`Error while deleting user ${id}: ${error.message}`);
   }
 };
+
+const getUserProfile = async (req, res, next) => {
+  const user = req.user;
+  try {
+    res.json(user);
+    // Log successful retrieval
+    logger.info(`User ${user.id} retrieved successfully`);
+  } catch (error) {
+    next(error);
+    logger.error(`Error while fetching user ${user.id}: ${error.message}`);
+  }
+};
 module.exports = {
   postUser,
   getAllUsers,
   getUserById,
   updateUser,
   deleteUserById,
+  getUserProfile
 };

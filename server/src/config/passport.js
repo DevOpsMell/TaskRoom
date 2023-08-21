@@ -14,7 +14,7 @@ const jwtStrategy = new JwtStrategy(jwtOptions, async (payload, done) => {
   console.log('Here is the payload');
   try {
     console.log(payload);
-    const user = await User.findById(payload.id);
+    const user = await User.findById(payload.id).select('-hashed_password');
     if (!user) {
       return done(null, false);
     }

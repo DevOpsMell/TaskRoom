@@ -62,13 +62,13 @@ const userSchema = new Schema({
   ],
 });
 
-userSchema.virtual('id').get(function () {
-  if (this._id) {
-    return this._id.toHexString()
-  }
-})
 userSchema.set('toJSON', {
   virtuals: true,
+  transform: (doc, ret) => {
+    ret.id = ret._id
+    delete ret._id
+    delete ret.__v
+  }
 })
 
 const UserModel = model('User', userSchema);

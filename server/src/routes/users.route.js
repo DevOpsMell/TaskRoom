@@ -4,7 +4,8 @@ const {
   getAllUsers,
   getUserById,
   updateUser,
-  deleteUserById
+  deleteUserById,
+  getUserProfile,
 } = require('../controllers/users.controller');
 // const { validateUser } = require('../middleware/userValidation');
 
@@ -17,5 +18,6 @@ userRouter.get('/', getAllUsers);
 userRouter.get('/:id', authenticateJWT, getUserById);
 userRouter.patch('/:id', updateUser);
 userRouter.delete('/:id', deleteUserById);
+userRouter.get('/profile', authenticateJWT, getUserProfile);
 
 module.exports = userRouter;

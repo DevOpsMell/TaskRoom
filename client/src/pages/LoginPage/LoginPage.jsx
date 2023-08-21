@@ -1,11 +1,25 @@
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
-import Container from "@mui/material/Container";
+import React, { useEffect, useState } from 'react'
+import {TextField, Container} from '@mui/material'
+import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
+import { Link, useNavigate } from 'react-router-dom'
+import { login } from '../../API/login'
+import { useDispatch, useSelector } from 'react-redux'
+import { login as loginAction } from '../../store/authSlice'
+
 
 const LoginPage = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
+  const userState = useSelector((state) => state.auth)
+  const isAuthenticated = userState.isAuthenticated
+  useEffect(() => {
+    if(isAuthenticated) {
+      navigate('/',) 
+    }
+  }, [isAuthenticated])
+  
   const [formValues, setFormValues] = useState({
     email: "",
     password: "",
@@ -41,26 +55,25 @@ const LoginPage = () => {
     return valid;
   };
 
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
+  const handleOnSubmit = async (event) => {
+    event.preventDefault()
     const isValid = validateForm();
-
-  if (isValid) {
-    console.log("Form submitted");
-    // console.log("Form values:", formValues);
-  } 
-  // else {
-  //   console.log("Form validation failed");
-  // }
-};
+    if (!isValid) return;
+    try {
+      const response = await login(formValues)
+      dispatch(loginAction(response.data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const handleOnChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     setFormValues({
       ...formValues,
       [name]: value,
-    });
-  };
+    })
+  }
 
   return (
     <Box
@@ -132,4 +145,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+export default LoginPage
