@@ -4,8 +4,10 @@ import Button from "@mui/material/Button";
 import Box from "@mui/material/Box";
 import { Link } from "react-router-dom";
 import Container from "@mui/material/Container";
+import { useLocation } from "react-router-dom";
 
 const RegisterPage = () => {
+  const location = useLocation();
   const [formValues, setFormValues] = useState({
     name: "",
     email: "",
@@ -113,6 +115,7 @@ const RegisterPage = () => {
             name="email"
             type="text"
             error={Boolean(errors.email)}
+            defaultValue={location.state?.email}
             helperText={errors.email}
           />
 
