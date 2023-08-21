@@ -4,11 +4,12 @@ import { Box } from '@mui/material'
 import { styled } from '@mui/material/styles'
 
 const StyledBox = styled(Box)(() => ({
-	position: 'relative',
+	position: 'absolute',
+  top: '-64px',
 	zIndex: '-100',
   '& .background-video': {
     width: '100vw',
-		height: '480px',
+		height: '544px',
 		objectFit: 'cover',
 		
 		// height: '100vh',

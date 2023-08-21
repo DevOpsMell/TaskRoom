@@ -29,12 +29,12 @@ export default function TaskBoardHeader() {
   };
   return (
     <AppBar
-      position="absolute"
       sx={{
         backgroundColor: "transparent",
         backdropFilter: "blur(5px)",
         elevation: "2",
         borderBottom: "none",
+				position: 'relative',
       }}
     >
       <Toolbar sx={{ paddingLeft: 0, paddingRight: 0 }}>
