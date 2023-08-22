@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import {TextField, Container} from '@mui/material'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { login } from '../../API/login'
 import { useDispatch, useSelector } from 'react-redux'
 import { login as loginAction } from '../../store/authSlice'
@@ -11,6 +11,7 @@ import { login as loginAction } from '../../store/authSlice'
 const LoginPage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const location  = useLocation()
 
   const userState = useSelector((state) => state.auth)
   const isAuthenticated = userState.isAuthenticated
@@ -21,7 +22,7 @@ const LoginPage = () => {
   }, [isAuthenticated])
   
   const [formValues, setFormValues] = useState({
-    email: "",
+    email: location.state?.email,
     password: "",
   });
 
@@ -103,6 +104,7 @@ const LoginPage = () => {
             type="text"
             error={Boolean(errors.email)}
             helperText={errors.email}
+            defaultValue={location.state?.email}
           />
 
           <TextField

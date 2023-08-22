@@ -1,80 +1,107 @@
-import React, { useState } from "react";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import { Link } from "react-router-dom";
-import Container from "@mui/material/Container";
-import { useLocation } from "react-router-dom";
+import React, { useState } from 'react'
+import {
+  TextField,
+  Button,
+  Box,
+  Container,
+  Alert,
+  Snackbar,
+} from '@mui/material'
+import { Link } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
+import register from '../../API/register'
 
 const RegisterPage = () => {
-  const location = useLocation();
+  const location = useLocation()
   const [formValues, setFormValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+    name: '',
+    email: location.state?.email,
+    password: '',
+  })
 
   const [errors, setErrors] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+    name: '',
+    email: '',
+    password: '',
+  })
 
-  const validateForm = () => {
-    let valid = true;
-    const newErrors = { ...errors };
+  const validateForm = (errorArgs) => {
+    let valid = true
+    const newErrors = { ...errors }
 
     if (!formValues.name) {
-      newErrors.name = "Name is required";
-      valid = false;
+      newErrors.name = 'Name is required'
+      valid = false
     } else {
-      newErrors.name = "";
+      newErrors.name = ''
     }
 
     if (!formValues.email) {
-      newErrors.email = "Email is required";
-      valid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formValues.email)) {
-      newErrors.email = "Email is invalid";
-      valid = false;
+      newErrors.email = 'Email is required'
+      valid = false
+    } else if (
+      !/\S+@\S+\.\S+/.test(formValues.email) ||
+      errorArgs?.invalidEmail
+    ) {
+      newErrors.email = 'Email is invalid'
+      valid = false
+    } else if (errorArgs?.dupalicateEmail) {
+      newErrors.email = 'Email is registered already'
+      valid = false
     } else {
-      newErrors.email = "";
+      newErrors.email = ''
     }
 
     if (!formValues.password) {
-      newErrors.password = "Password is required";
-      valid = false;
+      newErrors.password = 'Password is required'
+      valid = false
     } else if (formValues.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
-      valid = false;
+      newErrors.password = 'Password must be at least 6 characters'
+      valid = false
     } else {
-      newErrors.password = "";
+      newErrors.password = ''
     }
 
-    setErrors(newErrors);
-    return valid;
-  };
+    setErrors(newErrors)
+    return valid
+  }
 
-  const handleOnSubmit = (event) => {
-    event.preventDefault();
-    const isValid = validateForm();
+  const [successAlertOpen, setSuccessAlertOpen] = useState(false)
+  const navigate = useNavigate()
+  const handleOnSubmit = async (event) => {
+    event.preventDefault()
+    const isValid = validateForm()
 
     if (isValid) {
-      console.log("Form submitted");
-      // console.log("Form values:", formValues);
-    } 
-    // else {
-    //   console.log("Form validation failed");
-    // }
-  };
+      console.log('Form submitted')
+      try {
+        console.log('Registering...')
+        const registerRes = await register(formValues)
+        if (registerRes.status !== 201) {
+          throw new Error('Register failed')
+        }
+        setSuccessAlertOpen(true)
+        setTimeout(() => {
+          navigate('/login', { state: { email: formValues.email } })
+        }, 2000)
+      } catch (error) {
+        if (error.response?.data?.message === 'User already exists') {
+          validateForm({ dupalicateEmail: true })
+        }
+        if (error.response?.data?.message.includes('Invalid email format')) {
+          validateForm({ invalidEmail: true })
+        }
+      }
+    }
+  }
 
   const handleOnChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value } = event.target
     setFormValues({
       ...formValues,
       [name]: value,
-    });
-  };
+    })
+  }
 
   return (
     <Box
@@ -84,16 +111,29 @@ const RegisterPage = () => {
       minHeight="100vh"
       bgcolor="#ffffff"
     >
+      <Snackbar
+        open={successAlertOpen}
+        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        autoHideDuration={2000}
+        onClose={() => setSuccessAlertOpen(false)}
+      >
+        <Alert severity={'success'}>
+          Register successfully
+          <br />
+          Redirecting to Login page...
+        </Alert>
+      </Snackbar>
+
       <Container
         maxWidth="sm"
         sx={{
-          borderRadius: "3px",
-          padding: "25px 40px",
-          boxShadow: "rgba(0,0,0,0.1) 0 0 10px",
+          borderRadius: '3px',
+          padding: '25px 40px',
+          boxShadow: 'rgba(0,0,0,0.1) 0 0 10px',
         }}
       >
         <form onSubmit={handleOnSubmit}>
-          <h2 style={{ textAlign: "center", fontSize: "45px" }}>Register</h2>
+          <h2 style={{ textAlign: 'center', fontSize: '45px' }}>Register</h2>
           <TextField
             label="Name"
             variant="outlined"
@@ -136,18 +176,18 @@ const RegisterPage = () => {
             color="primary"
             type="submit"
             fullWidth
-            style={{ margin: "25px auto" }}
+            style={{ margin: '25px auto' }}
           >
             Register
           </Button>
-          <p style={{ textAlign: "center" }}>
+          <p style={{ textAlign: 'center' }}>
             <span>Already a member?</span>
             <Button
               component={Link}
               to="/login"
               variant="outlined"
               size="small"
-              style={{ marginLeft: "10px" }}
+              style={{ marginLeft: '10px' }}
             >
               Login
             </Button>
@@ -155,7 +195,7 @@ const RegisterPage = () => {
         </form>
       </Container>
     </Box>
-  );
-};
+  )
+}
 
-export default RegisterPage;
+export default RegisterPage
