@@ -125,7 +125,7 @@ function Project() {
   }, [])
 
   return (
-    <Box>
+    <Box >
       <DragDropContext onDragEnd={onDragEnd} onDragStart={onDragStart}>
         <Droppable
           droppableId="all-columns"
