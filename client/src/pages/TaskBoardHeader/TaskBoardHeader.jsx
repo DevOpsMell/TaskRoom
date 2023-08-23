@@ -55,7 +55,7 @@ export default function TaskBoardHeader() {
   return (
     <AppBar
       sx={{
-        backgroundColor: 'transparent',
+        backgroundColor: 'rgba(255,255,255,0.5)',
         backdropFilter: 'blur(5px)',
         elevation: '2',
         borderBottom: 'none',
